@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useStore } from './StoreContext';
@@ -8,35 +8,44 @@ const ItemList = () => {
   const { state, dispatch } = useStore();
   const navigation = useNavigation();
   const route = useRoute();
-  const { type } = route.params;
+  const { category } = route.params;
+  
 
   const handleAddItem = () => {
-    navigation.navigate('AddItem', { type });
+    navigation.navigate('AddItem', { category });
   };
 
-  const handleItemDetails = () => {
-    navigation.navigate('ItemDetails', { type });
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleAddItem} style={styles.addButton}>
+          <Icon name="plus" size={25} color="#0008ff" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  const handleItemDetails = (item) => {
+    navigation.navigate('ItemDetails', { item, category });
   };
   const handleDeleteItem = (item) => {
-    dispatch({ type: 'DELETE_ITEM', payload: { category: type, item } });
+    dispatch({ type: 'DELETE_ITEM', payload: { category, item } });
   };
 
+  const list = state.itemList[category.key]
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Items in {type}:</Text>
-      {state.itemList[type].map((item, index) => (
+      <Text style={styles.heading}>Items in {category.name}:</Text>
+      {list?.length > 0 ? list.map((item, index) => (
         <View key={index} style={styles.itemContainer}>
           <TouchableOpacity onPress={() => handleItemDetails(item)}>
-            <Text style={styles.itemText}>{item}</Text>
+            <Text style={styles.itemText}>{item.id}. {item.name}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleDeleteItem(item)}>
             <Icon name="trash" size={20} color="#ff0000" style={styles.deleteIcon} />
           </TouchableOpacity>
         </View>
-      ))}
-      <TouchableOpacity onPress={handleAddItem} style={styles.addButton}>
-        <Icon name="plus" size={20} color="#ffffff" />
-      </TouchableOpacity>
+      )): <Text style={{fontWeight: 'bold'}}>No Items available.</Text>}
     </View>
   );
 };
@@ -65,11 +74,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   addButton: {
-    // position: 'absolute',
-    // bottom: 20,
-    // right: 20,
-    backgroundColor: '#007bff',
-    borderRadius: 10,
     width: 50,
     height: 50,
     alignItems: 'center',

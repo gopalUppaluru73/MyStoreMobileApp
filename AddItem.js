@@ -4,18 +4,26 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useStore } from './StoreContext';
 
 const AddItem = () => {
-  const [itemName, setItemName] = useState('');
+  const [item, setItem] = useState({
+    name: '',
+    description: '',
+    price: ''
+  });
   const { dispatch } = useStore();
   const navigation = useNavigation();
   const route = useRoute();
-  const { type } = route.params;
+  const { category } = route.params;
 
   const handleAddItem = () => {
-    if (itemName.trim() !== '') {
-      dispatch({ type: 'ADD_ITEM', payload: { category: type, item: itemName } });
+    if (item.name.trim() !== '') {
+      dispatch({ type: 'ADD_ITEM', payload: { category, item } });
       navigation.goBack();
     }
   };
+
+  const changeHandler = (val, key) => {
+    setItem({...item, [key]: val})
+  }
 
   return (
     <View style={styles.container}>
@@ -23,10 +31,24 @@ const AddItem = () => {
       <TextInput
         style={styles.input}
         placeholder="Enter item name"
-        value={itemName}
-        onChangeText={(text) => setItemName(text)}
+        value={item.name}
+        onChangeText={val => changeHandler(val, 'name')}
+        autoFocus={true}
       />
-      <Button title="Add" onPress={handleAddItem} />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter description"
+        value={item.description}
+        onChangeText={val => changeHandler(val, 'description')}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter price"
+        value={item.price}
+        keyboardType = 'number-pad'
+        onChangeText={val => changeHandler(val, 'price')}
+      />
+      <Button title={`Add to ${category.name}`} onPress={handleAddItem} />
     </View>
   );
 };

@@ -7,20 +7,20 @@ const ItemTypes = () => {
   const { state } = useStore();
   const navigation = useNavigation();
 
-  const handleTypeSelect = (type) => {
-    navigation.navigate('ItemList', { type });
+  const handleTypeSelect = (category) => {
+    navigation.navigate('ItemList', { category });
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Item Types:</Text>
-      {state.itemTypes.map((type, index) => (
+      {state.itemTypes.map((category, index) => (
         <TouchableOpacity 
           key={index}
           style={styles.item} 
-          onPress={() => handleTypeSelect(type)}
+          onPress={() => handleTypeSelect(category)}
         >
-          <Text>{type}</Text>
+          <Text>{category.name}</Text>
         </TouchableOpacity>
       ))}
     </View>

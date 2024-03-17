@@ -1,22 +1,39 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ItemDetails = ({ route, navigation }) => {
-  const { item } = route.params;
-
+  const { item, category } = route.params;
+  console.log({item, params: route.params})
   const handleEdit = () => {
-    navigation.navigate('EditItem', { item });
+    navigation.navigate('EditItem', { selectedItem: item , category});
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleEdit} style={styles.button}>
+          <Icon name="edit" size={25} color="#0008ff" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Item Details</Text>
-      <Text>Name: {item}</Text>
-      <Text>Description: {item}</Text>
-      <Text>Price: {item}</Text>
-      <TouchableOpacity style={styles.button} onPress={handleEdit}>
-        <Text style={styles.buttonText}>Edit Item</Text>
-      </TouchableOpacity>
+      <View style={styles.listItem}>
+        <Text style={[styles.label, styles.info]}>Name: </Text>
+        <Text style={styles.info}>{item.name}</Text>
+      </View>
+      <View style={styles.listItem}>
+        <Text style={[styles.label, styles.info]}>Description: </Text>
+        <Text style={styles.info}>{item.description}</Text>
+      </View>
+      <View style={styles.listItem}>
+        <Text style={[styles.label, styles.info]}>Price: </Text>
+        <Text style={styles.info}>{item.price}</Text>
+      </View>
     </View>
   );
 };
@@ -26,6 +43,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 30
+  },
+  listItem: {
+    marginBottom: 10,
+    flexDirection: 'row',
+  },
+  info:{
+    flex: 1
+  },
+  label:{
+    fontWeight: 'bold',
   },
   title: {
     fontSize: 24,
@@ -33,14 +61,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

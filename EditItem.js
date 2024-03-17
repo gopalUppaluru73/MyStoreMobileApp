@@ -1,43 +1,50 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useStore } from './StoreContext';
 
-const EditItem = ({ route, navigation }) => {
-  const { item } = route.params;
-  const [name, setName] = useState(item);
-  // const [description, setDescription] = useState(item.description);
-  // const [price, setPrice] = useState(item.price);
+const EditItem = () => {
+  const route = useRoute();
+  const { category, selectedItem } = route.params;
+  const [item, setItem] = useState(selectedItem);
+  const { dispatch , state} = useStore();
+  const navigation = useNavigation();
 
-  const handleSaveChanges = () => {
-    // Implement logic to save changes
-    // For simplicity, we'll just navigate back to ItemDetails
-    navigation.goBack();
+  const submitHandler = () => {
+    if (item.name.trim() !== '') {
+      dispatch({ type: 'EDIT_ITEM', payload: { category, item } });
+      navigation.navigate('ItemDetails', { item, category });
+    }
   };
+
+  const changeHandler = (val, key) => {
+    setItem({...item, [key]: val})
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Edit Item</Text>
+      <Text style={styles.heading}>Add New Item:</Text>
       <TextInput
         style={styles.input}
-        value={name}
-        onChangeText={setName}
-        placeholder="Name"
-      />
-      {/* <TextInput
-        style={styles.input}
-        value={description}
-        onChangeText={setDescription}
-        placeholder="Description"
+        placeholder="Enter item name"
+        value={item.name}
+        onChangeText={val => changeHandler(val, 'name')}
+        autoFocus={true}
       />
       <TextInput
         style={styles.input}
-        value={price}
-        onChangeText={setPrice}
-        placeholder="Price"
-        keyboardType="numeric"
-      /> */}
-      <TouchableOpacity style={styles.button} onPress={handleSaveChanges}>
-        <Text style={styles.buttonText}>Save Changes</Text>
-      </TouchableOpacity>
+        placeholder="Enter description"
+        value={item.description}
+        onChangeText={val => changeHandler(val, 'description')}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter price"
+        value={item.price}
+        keyboardType = 'number-pad'
+        onChangeText={val => changeHandler(val, 'price')}
+      />
+      <Button title={`Add to ${category.name}`} onPress={submitHandler} />
     </View>
   );
 };
@@ -47,29 +54,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  heading: {
+    fontSize: 20,
     marginBottom: 20,
   },
   input: {
-    width: '80%',
+    width: '100%',
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });
 
