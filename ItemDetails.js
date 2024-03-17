@@ -11,9 +11,9 @@ const ItemDetails = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Item Details</Text>
-      <Text>Name: {item.name}</Text>
-      <Text>Description: {item.description}</Text>
-      <Text>Price: {item.price}</Text>
+      <Text>Name: {item}</Text>
+      <Text>Description: {item}</Text>
+      <Text>Price: {item}</Text>
       <TouchableOpacity style={styles.button} onPress={handleEdit}>
         <Text style={styles.buttonText}>Edit Item</Text>
       </TouchableOpacity>

@@ -3,9 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 
 const EditItem = ({ route, navigation }) => {
   const { item } = route.params;
-  const [name, setName] = useState(item.name);
-  const [description, setDescription] = useState(item.description);
-  const [price, setPrice] = useState(item.price);
+  const [name, setName] = useState(item);
+  // const [description, setDescription] = useState(item.description);
+  // const [price, setPrice] = useState(item.price);
 
   const handleSaveChanges = () => {
     // Implement logic to save changes
@@ -22,7 +22,7 @@ const EditItem = ({ route, navigation }) => {
         onChangeText={setName}
         placeholder="Name"
       />
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         value={description}
         onChangeText={setDescription}
@@ -34,7 +34,7 @@ const EditItem = ({ route, navigation }) => {
         onChangeText={setPrice}
         placeholder="Price"
         keyboardType="numeric"
-      />
+      /> */}
       <TouchableOpacity style={styles.button} onPress={handleSaveChanges}>
         <Text style={styles.buttonText}>Save Changes</Text>
       </TouchableOpacity>

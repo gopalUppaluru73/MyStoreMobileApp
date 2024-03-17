@@ -14,6 +14,9 @@ const ItemList = () => {
     navigation.navigate('AddItem', { type });
   };
 
+  const handleItemDetails = () => {
+    navigation.navigate('ItemDetails', { type });
+  };
   const handleDeleteItem = (item) => {
     dispatch({ type: 'DELETE_ITEM', payload: { category: type, item } });
   };
@@ -23,7 +26,9 @@ const ItemList = () => {
       <Text style={styles.heading}>Items in {type}:</Text>
       {state.itemList[type].map((item, index) => (
         <View key={index} style={styles.itemContainer}>
-          <Text style={styles.itemText}>{item}</Text>
+          <TouchableOpacity onPress={() => handleItemDetails(item)}>
+            <Text style={styles.itemText}>{item}</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => handleDeleteItem(item)}>
             <Icon name="trash" size={20} color="#ff0000" style={styles.deleteIcon} />
           </TouchableOpacity>
@@ -60,11 +65,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   addButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
+    // position: 'absolute',
+    // bottom: 20,
+    // right: 20,
     backgroundColor: '#007bff',
-    borderRadius: 50,
+    borderRadius: 10,
     width: 50,
     height: 50,
     alignItems: 'center',
