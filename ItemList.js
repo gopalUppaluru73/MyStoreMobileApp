@@ -89,7 +89,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteItem } from './Store/slice'; // Import your action creators
+import { deleteItemAction } from './Store/slice'; // Import your action creators
 
 const ItemList = () => {
   const navigation = useNavigation();
@@ -107,20 +107,20 @@ const ItemList = () => {
   };
 
   const handleDeleteItem = (item) => {
-    dispatch(deleteItem({ categoryKey: category.key, item }));
+    dispatch(deleteItemAction({ categoryKey: category.key, item }));
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Items in {category.name}:</Text>
-      {itemList && itemList.length > 0 ? (
+      {itemList?.length > 0 ? (
         itemList.map((item, index) => (
           <View key={index} style={styles.itemContainer}>
             <TouchableOpacity onPress={() => handleItemDetails(item)}>
               <Text style={styles.itemText}>{item.name}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleDeleteItem(item)}>
-              <Text style={styles.deleteText}>Delete</Text> {/* Use an Icon or Text */}
+              <Text style={styles.deleteText}>Delete</Text>
             </TouchableOpacity>
           </View>
         ))
@@ -128,7 +128,7 @@ const ItemList = () => {
         <Text>No Items available.</Text>
       )}
       <TouchableOpacity onPress={handleAddItem} style={styles.addButton}>
-        <Text>Add Item</Text> {/* Use an Icon or Text */}
+        <Text style={{color: '#fff'}}>Add Item</Text>
       </TouchableOpacity>
     </View>
   );
@@ -138,9 +138,7 @@ const ItemList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
+    padding: 20,
   },
   heading: {
     fontSize: 20,
@@ -159,10 +157,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   addButton: {
-    width: 50,
-    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    marginTop: 20
   },
 });
 
