@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import images from './images';
 
 const ItemDetails = ({ route, navigation }) => {
   const { item, category } = route.params;
-  console.log({item, params: route.params})
+  console.log({ item, params: route.params })
   const handleEdit = () => {
-    navigation.navigate('EditItem', { selectedItem: item , category});
+    navigation.navigate('EditItem', { selectedItem: item, category });
   };
 
   useEffect(() => {
@@ -18,6 +19,7 @@ const ItemDetails = ({ route, navigation }) => {
       ),
     });
   }, [navigation]);
+  
 
   return (
     <View style={styles.container}>
@@ -27,12 +29,24 @@ const ItemDetails = ({ route, navigation }) => {
         <Text style={styles.info}>{item.name}</Text>
       </View>
       <View style={styles.listItem}>
+        <Text style={[styles.label, styles.info]}>Image: </Text>
+        {category?.key && <Image source={images[category?.key]} style={{ height: 120 }} resizeMode='contain' />}
+      </View>
+      <View style={styles.listItem}>
         <Text style={[styles.label, styles.info]}>Description: </Text>
         <Text style={styles.info}>{item.description}</Text>
       </View>
       <View style={styles.listItem}>
         <Text style={[styles.label, styles.info]}>Price: </Text>
         <Text style={styles.info}>{item.price}</Text>
+      </View>
+      <View style={styles.listItem}>
+        <Text style={[styles.label, styles.info]}>No of units: </Text>
+        <Text style={styles.info}>{item.noOfUnits}</Text>
+      </View>
+      <View style={styles.listItem}>
+        <Text style={[styles.label, styles.info]}>Ratings: </Text>
+        <Text style={styles.info}>{item.rating}</Text>
       </View>
     </View>
   );
@@ -49,10 +63,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row',
   },
-  info:{
+  info: {
     flex: 1
   },
-  label:{
+  label: {
     fontWeight: 'bold',
   },
   title: {

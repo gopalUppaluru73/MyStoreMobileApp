@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useStore } from './StoreContext';
+import { useDispatch } from 'react-redux';
+import { addItemAction } from './Store/slice';
 
 const AddItem = () => {
   const [item, setItem] = useState({
     name: '',
     description: '',
-    price: ''
+    price: '',
+    noOfUnits: '',
+    rating:''
   });
-  const { dispatch } = useStore();
+  const dispatch = useDispatch();
+
   const navigation = useNavigation();
   const route = useRoute();
   const { category } = route.params;
 
   const handleAddItem = () => {
     if (item.name.trim() !== '') {
-      dispatch({ type: 'ADD_ITEM', payload: { category, item } });
+      dispatch(addItemAction({ category, item } ));
       navigation.goBack();
     }
   };
@@ -47,6 +51,20 @@ const AddItem = () => {
         value={item.price}
         keyboardType = 'number-pad'
         onChangeText={val => changeHandler(val, 'price')}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="No of units"
+        value={item.noOfUnits}
+        keyboardType = 'number-pad'
+        onChangeText={val => changeHandler(val, 'noOfUnits')}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Rating"
+        value={item.rating}
+        keyboardType = 'number-pad'
+        onChangeText={val => changeHandler(val, 'rating')}
       />
       <Button title={`Add to ${category.name}`} onPress={handleAddItem} />
     </View>
