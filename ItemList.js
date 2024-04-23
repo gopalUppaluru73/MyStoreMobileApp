@@ -1,61 +1,57 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useStore } from './StoreContext';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteItemAction } from './Store/slice'; // Import your action creators
 
 const ItemList = () => {
-  const { state, dispatch } = useStore();
   const navigation = useNavigation();
   const route = useRoute();
   const { category } = route.params;
-  
+  const itemList = useSelector((state) => state.items.itemList[category.key]);
+  const dispatch = useDispatch();
+
+  const handleItemDetails = (item) => {
+    navigation.navigate('ItemDetails', { item, category });
+  };
 
   const handleAddItem = () => {
     navigation.navigate('AddItem', { category });
   };
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity onPress={handleAddItem} style={styles.addButton}>
-          <Icon name="plus" size={25} color="#0008ff" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
-  const handleItemDetails = (item) => {
-    navigation.navigate('ItemDetails', { item, category });
-  };
   const handleDeleteItem = (item) => {
-    dispatch({ type: 'DELETE_ITEM', payload: { category, item } });
+    dispatch(deleteItemAction({ categoryKey: category.key, item }));
   };
 
-  const list = state.itemList[category.key]
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Items in {category.name}:</Text>
-      {list?.length > 0 ? list.map((item, index) => (
-        <View key={index} style={styles.itemContainer}>
-          <TouchableOpacity onPress={() => handleItemDetails(item)}>
-            <Text style={styles.itemText}>{item.id}. {item.name}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleDeleteItem(item)}>
-            <Icon name="trash" size={20} color="#ff0000" style={styles.deleteIcon} />
-          </TouchableOpacity>
-        </View>
-      )): <Text style={{fontWeight: 'bold'}}>No Items available.</Text>}
+      {itemList?.length > 0 ? (
+        itemList.map((item, index) => (
+          <View key={index} style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => handleItemDetails(item)}>
+              <Text style={styles.itemText}>{item.name}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleDeleteItem(item)}>
+              <Text style={styles.deleteText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      ) : (
+        <Text>No Items available.</Text>
+      )}
+      <TouchableOpacity onPress={handleAddItem} style={styles.addButton}>
+        <Text style={{color: '#fff'}}>Add Item</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
+// Add your StyleSheet code here
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
+    padding: 20,
   },
   heading: {
     fontSize: 20,
@@ -74,10 +70,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   addButton: {
-    width: 50,
-    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    marginTop: 20
   },
 });
 
