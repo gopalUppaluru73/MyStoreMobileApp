@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteItemAction } from './Store/slice'; // Import your action creators
+import { getItemHelper } from './Util/Helper';
 
 const ItemList = () => {
   const navigation = useNavigation();
@@ -22,6 +23,13 @@ const ItemList = () => {
   const handleDeleteItem = (item) => {
     dispatch(deleteItemAction({ categoryKey: category.key, item }));
   };
+
+  useEffect(() => {
+    console.log('useEffect')
+    getItemHelper('ItemDB', `orderBy="category/key"&equalTo="${category.key}"`).then(response => {
+      console.log(response)
+    })
+  },[navigation])
 
   return (
     <View style={styles.container}>

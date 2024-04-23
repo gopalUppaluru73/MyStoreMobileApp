@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import { addItemAction } from './Store/slice';
+import { addItemHelper } from './Util/Helper';
+// import { addItemAction } from './Store/slice';
+
+
 
 const AddItem = () => {
   const [item, setItem] = useState({
@@ -20,8 +23,10 @@ const AddItem = () => {
 
   const handleAddItem = () => {
     if (item.name.trim() !== '') {
-      dispatch(addItemAction({ category, item } ));
-      navigation.goBack();
+      // dispatch(addItemAction({ category, item } ));
+      addItemHelper({ category, ...item }, 'ItemDB').then( response => {
+        navigation.goBack();
+      })
     }
   };
 
