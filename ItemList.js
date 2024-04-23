@@ -1,16 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteItemAction } from './Store/slice'; // Import your action creators
-import { getItemHelper } from './Util/Helper';
+import { DATABASE, deleteItemHelper, getItemHelper } from './Util/Helper';
+import { useIsFocused } from "@react-navigation/native";
 
 const ItemList = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { category } = route.params;
-  const itemList = useSelector((state) => state.items.itemList[category.key]);
-  const dispatch = useDispatch();
+  const [itemList, setItemList] = useState([])
+  const isFocused = useIsFocused();
+
+  // useSelector((state) => state.items.itemList[category.key]);
+  // const dispatch = useDispatch();
 
   const handleItemDetails = (item) => {
     navigation.navigate('ItemDetails', { item, category });
@@ -21,15 +25,22 @@ const ItemList = () => {
   };
 
   const handleDeleteItem = (item) => {
-    dispatch(deleteItemAction({ categoryKey: category.key, item }));
+    // dispatch(deleteItemAction({ categoryKey: category.id, item }));
+    deleteItemHelper(DATABASE.itemDB, item.id).then(() => {
+      fetchItemList()
+    })
   };
 
-  useEffect(() => {
-    console.log('useEffect')
-    getItemHelper('ItemDB', `orderBy="category/key"&equalTo="${category.key}"`).then(response => {
-      console.log(response)
+  const fetchItemList = () => {
+    getItemHelper(DATABASE.itemDB, `${category.id}`).then(response => {
+      setItemList(response);
     })
-  },[navigation])
+  }
+
+  useEffect(() => {
+    if (isFocused)
+      fetchItemList()
+  }, [navigation, category.key, isFocused])
 
   return (
     <View style={styles.container}>
@@ -49,7 +60,7 @@ const ItemList = () => {
         <Text>No Items available.</Text>
       )}
       <TouchableOpacity onPress={handleAddItem} style={styles.addButton}>
-        <Text style={{color: '#fff'}}>Add Item</Text>
+        <Text style={{ color: '#fff' }}>Add Item</Text>
       </TouchableOpacity>
     </View>
   );
