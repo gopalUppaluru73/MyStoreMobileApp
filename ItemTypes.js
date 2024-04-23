@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import { DATABASE, getItemHelper } from './Util/Helper';
 
 const ItemTypes = () => {
   const navigation = useNavigation();
-  const itemTypes = useSelector((state) => state.items.itemTypes);
+  // const itemTypes = useSelector((state) => state.items.itemTypes);
+  const [itemTypes, setItemTypes] = useState([])
 
   const handleTypeSelect = (category) => {
     navigation.navigate('ItemList', { category });
   };
+
+
+  const handleAddItemType = () => {
+    navigation.navigate('AddItemType');
+  }
+
+  useEffect(() => {
+    getItemHelper(DATABASE.typeDB).then(result => {
+      setItemTypes(result)
+    })
+  }, [navigation])
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -29,6 +42,9 @@ const ItemTypes = () => {
         keyExtractor={item => item.name}
         numColumns={2}
       />
+      <TouchableOpacity onPress={handleAddItemType} style={styles.addButton}>
+        <Text style={{ color: '#fff' }}>Add Item Type</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -37,8 +53,7 @@ const ItemTypes = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems:'center'
+    alignItems: 'center'
   },
   heading: {
     fontSize: 20,
@@ -54,6 +69,13 @@ const styles = StyleSheet.create({
     height: 130,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  addButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    marginTop: 20
   },
 });
 

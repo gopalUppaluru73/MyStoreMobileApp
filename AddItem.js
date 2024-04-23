@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import { addItemHelper } from './Util/Helper';
-// import { addItemAction } from './Store/slice';
+import { DATABASE, addItemHelper } from './Util/Helper';
 
 
 
@@ -11,6 +10,7 @@ const AddItem = () => {
   const [item, setItem] = useState({
     name: '',
     description: '',
+    image: '',
     price: '',
     noOfUnits: '',
     rating:''
@@ -24,7 +24,7 @@ const AddItem = () => {
   const handleAddItem = () => {
     if (item.name.trim() !== '') {
       // dispatch(addItemAction({ category, item } ));
-      addItemHelper({ category, ...item }, 'ItemDB').then( response => {
+      addItemHelper({ category, ...item }, DATABASE.itemDB).then( response => {
         navigation.goBack();
       })
     }
@@ -49,6 +49,12 @@ const AddItem = () => {
         placeholder="Enter description"
         value={item.description}
         onChangeText={val => changeHandler(val, 'description')}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Image url"
+        value={item.image}
+        onChangeText={val => changeHandler(val, 'image')}
       />
       <TextInput
         style={styles.input}

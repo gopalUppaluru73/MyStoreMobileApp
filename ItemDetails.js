@@ -19,19 +19,19 @@ const ItemDetails = ({ route, navigation }) => {
       ),
     });
   }, [navigation]);
-  
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Item Details</Text>
+     {item?.image && <Image source={{ uri: item.image }} style={{ height: 120, width: '100%' }} resizeMode='contain' />}
       <View style={styles.listItem}>
         <Text style={[styles.label, styles.info]}>Name: </Text>
         <Text style={styles.info}>{item.name}</Text>
       </View>
-      <View style={styles.listItem}>
+      {/* <View style={styles.listItem}>
         <Text style={[styles.label, styles.info]}>Image: </Text>
         {category?.key && <Image source={images[category?.key]} style={{ height: 120 }} resizeMode='contain' />}
-      </View>
+      </View> */}
       <View style={styles.listItem}>
         <Text style={[styles.label, styles.info]}>Description: </Text>
         <Text style={styles.info}>{item.description}</Text>

@@ -1,30 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useStore } from './StoreContext';
-import { useDispatch, useSelector } from 'react-redux';
-import { editItemAction } from './Store/slice';
+// import { useStore } from './StoreContext';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { editItemAction } from './Store/slice';
+import { DATABASE, editItemHelper } from './Util/Helper';
 
 const EditItem = () => {
   const route = useRoute();
   const { category, selectedItem } = route.params;
   const [item, setItem] = useState(selectedItem);
-  const dispatch = useDispatch();
-  const state = useSelector((state)=> state.items);
+  // const dispatch = useDispatch();
+  // const state = useSelector((state) => state.items);
   const navigation = useNavigation();
 
   const submitHandler = () => {
     if (item.name.trim() !== '') {
-      dispatch(editItemAction({ category, item }));
-      navigation.navigate('ItemDetails', { item, category });
+      // dispatch(editItemAction({ category, item }));
+      editItemHelper(item, DATABASE.itemDB, item.id).then(() => {
+        navigation.navigate('ItemDetails', { item, category });
+      })
     }
   };
 
   const changeHandler = (val, key) => {
-    setItem({...item, [key]: val})
+    setItem({ ...item, [key]: val })
   }
-
-  console.log({item})
 
   return (
     <View style={styles.container}>
@@ -44,23 +45,29 @@ const EditItem = () => {
       />
       <TextInput
         style={styles.input}
+        placeholder="Enter Image Url"
+        value={item.image}
+        onChangeText={val => changeHandler(val, 'image')}
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Enter price"
         value={item.price}
-        keyboardType = 'number-pad'
+        keyboardType='number-pad'
         onChangeText={val => changeHandler(val, 'price')}
       />
       <TextInput
         style={styles.input}
         placeholder="Enter no of units"
-        value={item.noOfUnits+''}
-        keyboardType = 'number-pad'
+        value={item.noOfUnits + ''}
+        keyboardType='number-pad'
         onChangeText={val => changeHandler(val, 'noOfUnits')}
       />
       <TextInput
         style={styles.input}
         placeholder="Enter rating"
-        value={item.rating+''}
-        keyboardType = 'number-pad'
+        value={item.rating + ''}
+        keyboardType='number-pad'
         onChangeText={val => changeHandler(val, 'rating')}
       />
       <Button title={`Update in ${category.name}`} onPress={submitHandler} />
